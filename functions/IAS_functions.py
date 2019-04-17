@@ -260,3 +260,92 @@ def tTacho_fsigLVA(top,fs,TPT=44):
     
     W = W(t)
     return t,W
+#%% Tacho grid 2 interpolate
+def tTacho_fsig(rpm,fs,PPR,isencod):
+    # rpm tacho signal
+    # fs sampling frequency
+    # PPR pulses per revolition, resolution tacho 44 surveillance case
+    # isencod ==1 encoder signal or IF profile
+    # sm smoothing intervals with 20
+    if isencod==1:
+        x=rpm
+    else: 
+        x=np.sin(2*np.pi*PPR*integrate.cumtrapz(rpm)/fs)
+    t=np.arange(0,len(x))
+    t=t/fs
+    # Produce +1 where signal is above trigger level
+    # and -1 where signal is below trigger level
+    TLevel=0
+    xs=np.sign(x-TLevel)
+    # Differentiate this to find where xs changes
+    # between -1 and +1 and vice versa
+    xDiff=np.diff(xs);
+    # We need to synchronize xDiff with variable t from the
+    # code above, since DIFF shifts one step
+    tDiff=t[1:]
+    # Now find the time instances of positive slope positions
+    # (-2 if negative slope is used)
+    tTacho=tDiff[xDiff.T == -2] # xDiff.T return the indexes boolean
+    # Count the time between the tacho signals and compute
+    # the RPM at these instances
+    rpmt=60/PPR/np.diff(tTacho); # Temporary rpm values
+    # Use three tacho pulses at the time and assign mean
+    # value to the center tacho pulse
+    rpmt=0.5*(rpmt[0:-1]+rpmt[1:]);
+    tTacho=tTacho[1:-1]; # diff again shifts one sample
+    
+    wfiltsv = int(2**np.fix(np.log2(.05*fs)))-1
+    rpmt= sg.savgol_filter(rpmt,wfiltsv,2)# smoothing filter
+    
+    rpmt=interpolate.InterpolatedUnivariateSpline\
+    (tTacho,rpmt,w=None, bbox=[None, None], k=1)
+    
+    rpmt = rpmt(t)
+    return rpmt,tTacho,xs
+#% Angular resampling given tTacho
+def COT_intp(x,tTacho,PPR,fs,SampPerRev):
+    tTacho=tTacho[::PPR] # Pick out every PPR pulse
+    ts=np.r_[:0] # Synchronous time instances
+    
+    for n in np.r_[:len(tTacho)-1]:
+        tt=np.linspace(tTacho[n],tTacho[n+1],SampPerRev+1)
+        ts=np.r_[ts,tt[:-1]]
+    # Now upsample the original signal 10 times (to a total
+    # of approx 25 times oversampling).
+    x=sg.resample(x,10*len(x))
+    fs=10*fs
+    #create a time axis for this upsampled signal
+    tx=np.r_[:len(x)]/fs
+    # Interpolate x onto the x-axis in ts instead of tx
+    xs=interpolate.InterpolatedUnivariateSpline(tx,x,w=None, bbox=[None, None], k=1)
+    xs=xs(ts)
+    tc=np.r_[:len(xs)/SampPerRev:1/SampPerRev]
+    return xs,tc,SampPerRev
+
+#% COT second function for IF as input
+def COT_intp2(f_ins,SampPerRev,x,fs):
+    t= np.r_[::len(x)];t=t/fs;
+    # Calculate the inst. angle as function of time
+    # (in part of revolutions, not radians!)
+    Ainst = integrate.cumtrapz(f_ins,t)
+    # Find every 1/SampPerRev of a cycle in Ainst
+    minA = min(Ainst)
+    maxA = max(Ainst)
+    Fractions = np.r_[np.ceil(minA*SampPerRev)/SampPerRev:maxA:1/SampPerRev]
+    # New sampling times
+    tt=interpolate.InterpolatedUnivariateSpline(Ainst,t,\
+                                                w=None, bbox=[None, None], k=1)
+    tt = tt(Fractions)
+    # Now upsample the original signal 10 times (to a total
+    # of approx 25 times oversampling)
+    x = sg.resample(x,10)
+    fs= 10*fs
+    # create a time axis for this upsampled signal
+    #tx=(0:1/fs:(length(x)-1)/fs);
+    tx= np.r_[:len(x)]/fs
+    # Interpolate x onto the x-axis in ts instead of tx
+    xs=interpolate.InterpolatedUnivariateSpline(tx,x,\
+                                                w=None, bbox=[None, None], k=1)
+    xs = xs(tt)
+    tc=np.r_[:len(xs)]/SampPerRev
+    return xs,tc,SampPerRev,tt
