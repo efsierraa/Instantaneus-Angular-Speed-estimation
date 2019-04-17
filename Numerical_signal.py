@@ -8,8 +8,7 @@ import scipy.io as sio # load save matlab files
 import scipy.signal as sg # signal pack
 import matplotlib.pyplot as plt # plotting
 from matplotlib.gridspec import GridSpec # easy subplots
-from functions.IAS_functions import signal_kharmdb_noise,iaslinearapprox,\
-iasbaseline,f_est_linear
+from functions.IAS_functions import signal_kharmdb_noise
 
 # %% Numerical signal
 lfile = 'Dataz\\dummy_6_christansen_base_linear_engine.mat'
