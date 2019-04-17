@@ -5,6 +5,8 @@ import scipy.signal as sg # DSP
 import time # tic toc
 import scipy.optimize as optm # optimization pack
 import scipy.io as sio # load save matlab files
+from scipy import interpolate # interpolate lib
+from scipy import integrate # integration pack
 import vibration_toolbox as vtb # vibration model
 # %% Functions to make the numerical signals
 def signal_kharmdb_noise(A,f_0,K,fs,sigmadb,zeta= 0.05,color='white'):
@@ -232,3 +234,29 @@ def f_est_linear(alpha_est,f_est,Nw=512,H=256):
             f_est_3 = np.mean(f_est_3,axis=0)
             f_est_lin[k*H:k*H+3*H] = np.r_[f_est_1,f_est_2,f_est_3]
     return f_est_lin
+# encoder signal to IAS
+def tTacho_fsigLVA(top,fs,TPT=44):
+    top = top/max(abs(top))
+    
+    t = np.r_[:len(top)]/fs
+    seuil=0;
+    ifm=np.where((top[:-1]<=seuil) & (top[1:]>seuil))[0]
+    tfm = (t[ifm]*top[ifm+1]-t[ifm+1]*top[ifm])/(top[ifm+1] -top[ifm])
+    ifm = tfm*fs;
+    
+    W =np.array([])
+    tW=np.array([])
+    for ii in np.r_[:TPT]:
+        tfmii = tfm[ii::TPT];
+        W=np.append(W,[1/np.diff(tfmii)])
+        tW=np.append(tW,[tfmii[:-1]/2 + tfmii[1:]/2])
+    
+    ordre=np.argsort(tW)
+    tW=np.sort(tW)
+    W = W[ordre]
+    
+    W=interpolate.InterpolatedUnivariateSpline\
+    (tW,W,w=None, bbox=[None, None])
+    
+    W = W(t)
+    return t,W
