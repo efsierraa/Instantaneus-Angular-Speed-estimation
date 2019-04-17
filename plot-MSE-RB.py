@@ -44,7 +44,7 @@ lfile = ['D16_ias_baseline_accx','D16_ias_linear_approx_accx'\
 
 
 n = 0 # amount of orders used in the estimation 0 for all 1 for all-1
-lfileK = len(lfile)-1
+lfileK = len(lfile)
 f_0mse = np.zeros([3,lfileK])# ACC0 ACC1 ACC2
 for lfilek in np.r_[:lfileK]:
     loading_matfile('Dataz/'+lfile[lfilek]); # same parameters all tests
@@ -63,5 +63,5 @@ for lfilek in np.r_[:lfileK]:
                 f_02= f_0[:f_est_lin.shape[0]]*5599.78/5691.86
                 f_0mse[Accx,lfilek]=np.mean(np.abs(f_est_lin[int(fs2/2):int(-fs2/2)]-f_02[int(fs2/2):int(-fs2/2)])**2)
             elif lfilek>3:
-                f_02= f_0[:f_est_lin.shape[0]]*183.116/183.547
+                f_02= f_0[:f_est_lin.shape[0]]*183.114/183.543 # small adjustments usuall when dealing with real signals, the pearsons correlation index could be another metric
                 f_0mse[Accx,lfilek]=np.mean(np.abs(f_est_lin[int(fs2/2):int(-fs2/2)]-f_02[int(fs2/2):int(-fs2/2)])**2)
