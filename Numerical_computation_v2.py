@@ -7,7 +7,7 @@ import numpy as np
 import scipy.io as sio # load save matlab files
 import matplotlib.pyplot as plt # plotting
 from matplotlib.gridspec import GridSpec # easy subplots
-from functions.allfunctions import f_est_linear,iaslinearapproxv2
+from functions.IAS_functions import f_est_linear,iaslinearapproxv2
 #%% Basreline snr test
 mat_contents = sio.loadmat('Dataz/'+'Numerical_signal', mdict=None, appendmat=True)
 for k, v in mat_contents.items():
