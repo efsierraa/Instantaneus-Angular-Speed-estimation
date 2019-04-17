@@ -8,7 +8,7 @@ from scipy.io import wavfile # read wav files
 import scipy.signal as sg # signal pack
 import matplotlib.pyplot as plt # plotting
 from matplotlib.gridspec import GridSpec # easy subplots
-from functions.func_sig_cost import iaslinearapproxv2,f_est_linear,tTacho_fsig,tTacho_fsigLVA
+from functions.IAS_functions import iaslinearapproxv2,f_est_linear,tTacho_fsig,tTacho_fsigLVA
 
 # function load matfile
 def loading_matfile(filed='none'):
