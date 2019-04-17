@@ -8,7 +8,7 @@ The list of the functions:
   - pink # pink noise generator using the Voss-McCartney algorithm. Taken from some place on the internet
   - cost_fun_1d # cost function for the optimization model assuming null qudratic term
   - cost_fun_2d # cost function given the two parameters for the linear approximation of the IAS for a given segment
-  - vanderZ # Z vandermonde matrix for the model used in costfunction
+  - vanderZ # Z vandermonde matrix for the model used in the cost function
   - cost_func_grid # returns several values of the cost function given a search grid (brute force to find the optimum) used as initialization
   - iaslinearapproxv2 # returns the quadratic term \alpha and w the cut frequency (constant term) for the piece-wise approwiamtion using the function f_est_linear
   - f_est_linear # piece-wise approximation given the computed parameters
