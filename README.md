@@ -1,5 +1,5 @@
 # IAS_parametric_estiamtion
-This repository has the functions used in the paper "Cyclo-non-stationary analysis for bearing fault identification based on instantaneous angular speed estimation" submitted to the conference https://survishno.sciencesconf.org/, for the Instantaneous Angular Speed Estimation.
+This repository has the functions used in the paper "Cyclo-non-stationary analysis for bearing fault identification based on instantaneous angular speed estimation" submitted to the conference https://survishno.sciencesconf.org/, for the Instantaneous Angular Speed Estimation. The database is available as supplementary material of the article, "Feedback on the Surveillance 8 challenge: Vibration-based diagnosis of a Safran aircraft engine", founded in https://doi.org/10.1016/j.ymssp.2017.01.037. If you find this material useful, please give a citation to the papers mentioned above.
 
 The list of the functions:
 
