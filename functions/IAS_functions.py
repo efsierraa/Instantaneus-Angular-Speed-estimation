@@ -92,7 +92,7 @@ def pink(nrows, ncols=16):
 def cost_fun_1d(param=np.r_[240],x=np.r_[:100],L=8):#(np.array([1,2]),array,N,L)
     N=x.size
     Z= vanderZ(0,param[0],N,L) # alpha,w_0,N,L
-    P= np.var(x-Z@np.linalg.pinv(Z)@x)
+    P= np.var(x-Z@np.linalg.pinv(Z)@x)# equivalent to np.var(x-Z@np.linalg.pinv(np.conjugate(Z)@Z)@np.conjugate(Z)@x)
     C= N*np.log(P) # only necessary for order estiamtion
     return C
 
