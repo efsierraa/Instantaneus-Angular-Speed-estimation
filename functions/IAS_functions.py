@@ -20,10 +20,10 @@ def signal_kharmdb_noise(A,f_0,K,fs,sigmadb,zeta= 0.05,color='white'):
     x = np.zeros(w_0.size)
     if A.size >= K:
         for k in np.arange(0,K):
-            x = x + A[:,k]*np.cos(2*np.pi*k*w_0)
+            x = x + A[:,k]*np.cos(2*np.pi*(k+1)*w_0)
     else:
         for k in np.arange(0,K):
-            x = x + A[k]*np.cos(2*np.pi*k*w_0)
+            x = x + A[k]*np.cos(2*np.pi*(k+1)*w_0)
            
     # zeta= 0.05
     m     = 1
